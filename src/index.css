@@ -1,0 +1,41 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  a{
+    text-decoration: none;
+  }
+  
+  .pos-item{
+  cursor: pointer;
+  }
+  
+  .pos-item:hover{
+    background-color: rgb(0, 102, 255);
+    color: #fff;
+  }
+  
+  .login-vector{
+    background-image: url('assets/Images/login-vector.jpg');
+    border-radius: 1rem;
+  }
+  .register-vector{
+    background-image: url('assets/Images/register-vector.jpg');
+    border-radius: 1rem;
+    margin: 3rem auto;
+    width: 35%;
+  }
+  
+  @media screen and (max-width:680px) {
+    .register-vector{
+      width:80%;
+    }
+  }
+  @media screen and (max-width:980px) {
+    .register-vector{
+      width:70%;
+    }
+  }
