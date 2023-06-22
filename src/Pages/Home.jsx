@@ -1,17 +1,21 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Link, Navigate } from 'react-router-dom'
 import Login from '../Components/Login'
 import MainLayout from '../Components/MainLayout'
 import pos from '../assets/Images/pos.jpg'
 
 
 const Home = () => {
+    const user =  localStorage.getItem('user')
+    if (user){
+            return <Navigate to="products"/> 
+    } 
   return (
-    <>
     <MainLayout>
+        
         <div className='bg-light p-5 rounded-3'>
             <div className='text-center'>
-            <h1 style={{fontWeight:'700'}}>Welcome to Our Shop Pos </h1>
+            <h1 style={{fontWeight:'700'}}>Welcome to Asude </h1>
             <p>If you run into any issue, contact 081-xxx-xxx-xx</p>
             </div>
         <div className='row justify-content-between g-4 mt-4 align-items-center'>
@@ -25,13 +29,11 @@ const Home = () => {
             <img src={pos} alt='' className='img-fluid rounded-3'/>
             </div>
         </div>
-
-            <Link to='/products' className='btn btn-primary'>Access Products here</Link>
         </div>
-
+        
     </MainLayout>
-    </>
   )
+    
 }
 
 export default Home

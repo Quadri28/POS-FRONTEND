@@ -1,11 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react'
+import {  useNavigate } from 'react-router-dom';
 import axios from './axios';
-import { UserContext } from './Context';
 
 const loginUrl= '/auth/login-pos'
 const Login = () => {
-  const {setUser } = useContext(UserContext)
   const [userNumber, setUserNumber] = useState('')
   const [pin, setPin] = useState('')
   const [errMsg, setErrMsg] = useState('')
@@ -13,53 +11,64 @@ const Login = () => {
   const userRef = useRef('')
   const errRef = useRef('')
 
+  const navigate = useNavigate()
   const submitHandler = async (e)=>{
     e.preventDefault();
     setUserNumber('')
     setPin('')
     const data = {
-      userNumber,
-      pin
+     user_number: userNumber,
+      pin : pin
     }
    try {
-      const resp = await axios.post(loginUrl, JSON.stringify(data), 
+
+       const resp = await axios.post(loginUrl, data, 
       {
-        headers:{'Content-Type': 'application/json; charset=UTF-8', 'Connection': 'Keep-alive'},
+        headers:{'Content-Type': 'application/json; charset=UTF-8', 'Accept': 'Application/json'},
         withCredentials:false,
-      }
+      },
+
       );
-      console.log(JSON.stringify(resp?.data));
-      const accessToken = resp?.data?.token;
-      setUser({userNumber, pin, accessToken})
+
+      localStorage.setItem('user', JSON.stringify(resp.data.data) );
       setUserNumber('')
-      setPin('')
-   } catch (error) {
+      setPin('');
+      navigate('products')      
+  
+} catch (error) {
     console.log(error)
     if (!error?.resp) {
       setErrMsg('No Server Response');
-    }else if(error.resp?.status ===400){
-      setErrMsg('Missing User Number or Password');
-    }else if(error.resp?.status === 401 ){
+    }else if(error.response?.status ===422){
+      setErrMsg(error.response.data.message);
+    }else if(error.response?.status === 401 ){
       setErrMsg('Unauthorized')
-    }else{
+    } else if(error.response?.status === 404){
+      setErrMsg(error.response.data.message)
+    }
+    else{
       setErrMsg('Login Failed')
     }
     errRef.current.focus();
    }
+
   
   }
-
   useEffect(()=>{
     userRef.current.focus();
   })
-
   useEffect(()=>{
     setErrMsg('');
+    
   }, [userNumber, pin])
+   
 
   return (
+    
     <div className='login-vector px-5 py-3'>
-      <p ref={errRef} className={errMsg ? '' : ''} aria-live="assertive"></p>
+      <p ref={errRef} className='text-danger text-center px-2' aria-live="assertive">
+        {errMsg}
+        </p>
        <h3 style={{fontWeight:'bold'}} className="text-white text-center">Membership Login</h3>
 
        <form onSubmit={submitHandler}>
@@ -79,17 +88,12 @@ const Login = () => {
             className="btn btn-lg text-white ">
                 Login
             </button> 
-            <p className='text-center text-white' style={{fontSize:'15px'}}> Don't have account yet? 
-            <Link to="/register" type='submit' className="btn btn-lg text-white" 
-            style={{fontSize:'15px', padding:'0'}}>
-               Register
-            </Link>
-            </p>
             </div>
         </div>
        </form>
     </div>
   )
+
 }
 
 export default Login
