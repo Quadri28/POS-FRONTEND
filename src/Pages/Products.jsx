@@ -101,7 +101,7 @@ const [errMsg, setErrMsg] = useState('')
         handlePrinter()
         const savedUser = localStorage.getItem('user')
         const url = '/orders'
-        const payload={
+        const payload={  
             user_id : JSON.parse(savedUser).user_id,
             amount: totalAmount,
             item_sales: getItemFromCart(cart),
